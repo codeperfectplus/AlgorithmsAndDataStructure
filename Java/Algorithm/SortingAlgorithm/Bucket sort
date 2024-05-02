@@ -1,0 +1,80 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class BucketSort {
+    public static void bucketSort(double[] arr) {
+        int n = arr.length;
+        if (n <= 0) return;
+
+        // Create empty buckets
+        ArrayList<Double>[] buckets = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            buckets[i] = new ArrayList<>();
+        }
+
+        // Scatter the elements into the buckets
+        for (int i = 0; i < n; i++) {
+            int bucketIndex = (int) (n * arr[i]);
+            buckets[bucketIndex].add(arr[i]);
+        }
+
+        // Sort each bucket
+        for (int i = 0; i < n; i++) {
+            Collections.sort(buckets[i]);
+        }
+
+        // Concatenate the buckets
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < buckets[i].size(); j++) {
+                arr[index++] = buckets[i].get(j);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter the number of elements: ");
+            int n = scanner.nextInt();
+            if (n <= 0) {
+                throw new IllegalArgumentException("Number of elements must be positive.");
+            }
+
+            double[] arr = new double[n];
+
+            System.out.println("Enter the elements (between 0 and 1): ");
+            for (int i = 0; i < n; i++) {
+                double element = scanner.nextDouble();
+                if (element < 0 || element > 1) {
+                    throw new IllegalArgumentException("Elements must be between 0 and 1.");
+                }
+                arr[i] = element;
+            }
+
+            System.out.println("Original array:");
+            printArray(arr);
+
+            bucketSort(arr);
+
+            System.out.println("Sorted array:");
+            printArray(arr);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter valid numbers.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+
+    public static void printArray(double[] arr) {
+        for (double value : arr) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+    }
+}
